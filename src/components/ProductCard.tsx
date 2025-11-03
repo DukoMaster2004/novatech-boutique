@@ -1,8 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { ShoppingCart, MessageCircle } from "lucide-react";
+import { ShoppingCart, MessageCircle, CreditCard } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 interface ProductCardProps {
   id: string;
@@ -16,6 +18,7 @@ interface ProductCardProps {
   color?: string;
   capacidad?: string;
   generacion?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   especificaciones?: Record<string, any>;
   mostrarComprar?: boolean;
   ruta?: string;
@@ -38,6 +41,7 @@ const ProductCard = ({
   ruta,
   onAddToCart,
 }: ProductCardProps) => {
+
   const calcularDescuento = () => {
     if (descuento) return descuento;
     if (precioAntiguo && precio < precioAntiguo) {
@@ -51,6 +55,14 @@ const ProductCard = ({
   const enviarWhatsApp = () => {
     const mensaje = `Hola! Me interesa el ${titulo} por $${precio.toLocaleString()}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, "_blank");
+  };
+
+  // 🔹 Agregar al carrito y redirigir al checkout
+  const comprarProducto = () => {
+    if (onAddToCart) {
+      onAddToCart();
+      // El checkout manejará la creación de la orden con todos los datos del cliente
+    }
   };
 
   return (
@@ -109,6 +121,13 @@ const ProductCard = ({
           <Button className="flex-1" onClick={onAddToCart}>
             <ShoppingCart className="mr-2 h-4 w-4" />
             Añadir
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={comprarProducto}
+          >
+            <CreditCard className="h-4 w-4 mr-2" />
+            Comprar
           </Button>
           <Button variant="outline" onClick={enviarWhatsApp}>
             <MessageCircle className="h-4 w-4" />

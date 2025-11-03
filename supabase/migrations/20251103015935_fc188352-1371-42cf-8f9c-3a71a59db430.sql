@@ -1,177 +1,113 @@
--- Create app_role enum
-CREATE TYPE public.app_role AS ENUM ('admin', 'user');
+-- ==================== TABLAS DE ÓRDENES ====================
+DROP TABLE IF EXISTS public.detalle_orden CASCADE;
+DROP TABLE IF EXISTS public.ordenes CASCADE;
 
--- Create user_roles table
-CREATE TABLE public.user_roles (
+CREATE TABLE public.ordenes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  role app_role NOT NULL,
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  numero_orden TEXT UNIQUE NOT NULL DEFAULT ('ORD-' || TO_CHAR(NOW(), 'YYYYMM') || '-' || LPAD(CAST(FLOOR(RANDOM()*10000) AS TEXT), 4, '0')),
+  
+  nombre_cliente TEXT NOT NULL,
+  email_cliente TEXT NOT NULL,
+  telefono_cliente TEXT NOT NULL,
+  
+  direccion_envio TEXT,
+  ciudad TEXT,
+  codigo_postal TEXT,
+  
+  subtotal DECIMAL(10,2) NOT NULL DEFAULT 0,
+  impuestos DECIMAL(10,2) NOT NULL DEFAULT 0,
+  total DECIMAL(10,2) NOT NULL,
+  
+  metodo_pago TEXT DEFAULT 'transferencia' CHECK (metodo_pago IN ('efectivo', 'tarjeta', 'transferencia', 'whatsapp')),
+  estado TEXT NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'confirmada', 'procesando', 'enviada', 'entregada', 'cancelada')),
+  
+  notas TEXT,
+  
+  fecha_orden TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  fecha_confirmacion TIMESTAMP WITH TIME ZONE,
+  fecha_envio TIMESTAMP WITH TIME ZONE,
+  fecha_entrega TIMESTAMP WITH TIME ZONE,
+  
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  UNIQUE(user_id, role)
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
--- Enable RLS on user_roles
-ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+CREATE TABLE public.detalle_orden (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  orden_id UUID NOT NULL REFERENCES public.ordenes(id) ON DELETE CASCADE,
+  producto_id TEXT NOT NULL,
+  cantidad INTEGER NOT NULL CHECK (cantidad > 0),
+  precio_unitario DECIMAL(10,2) NOT NULL,
+  subtotal DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
 
--- Create security definer function to check roles
-CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role app_role)
-RETURNS BOOLEAN
-LANGUAGE SQL
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1
-    FROM public.user_roles
-    WHERE user_id = _user_id AND role = _role
-  )
-$$;
+-- Habilitar RLS
+ALTER TABLE public.ordenes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.detalle_orden ENABLE ROW LEVEL SECURITY;
 
--- RLS policies for user_roles
-CREATE POLICY "Users can view their own roles"
-  ON public.user_roles
-  FOR SELECT
+-- Políticas para ordenes
+CREATE POLICY "Usuarios pueden ver sus propias órdenes"
+  ON public.ordenes FOR SELECT
   USING (auth.uid() = user_id);
 
-CREATE POLICY "Admins can manage roles"
-  ON public.user_roles
-  FOR ALL
-  USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Usuarios anónimos pueden ver todas las órdenes"
+  ON public.ordenes FOR SELECT
+  USING (true);
 
--- Create categories table
-CREATE TABLE public.categorias (
+CREATE POLICY "Usuarios pueden crear órdenes"
+  ON public.ordenes FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "Usuarios pueden actualizar sus propias órdenes"
+  ON public.ordenes FOR UPDATE
+  USING (auth.uid() = user_id OR auth.uid() IS NULL)
+  WITH CHECK (auth.uid() = user_id OR auth.uid() IS NULL);
+
+-- Políticas para detalles de orden
+CREATE POLICY "Cualquiera puede ver detalles de orden"
+  ON public.detalle_orden FOR SELECT
+  USING (true);
+
+CREATE POLICY "Usuarios pueden insertar detalles de orden"
+  ON public.detalle_orden FOR INSERT
+  WITH CHECK (true);
+
+-- Índices
+CREATE INDEX idx_ordenes_user_id ON public.ordenes(user_id);
+CREATE INDEX idx_ordenes_estado ON public.ordenes(estado);
+CREATE INDEX idx_ordenes_fecha ON public.ordenes(fecha_orden);
+CREATE INDEX idx_detalle_orden_orden_id ON public.detalle_orden(orden_id);
+
+-- ==================== TABLA DE CATEGORÍAS ====================
+CREATE TABLE IF NOT EXISTS public.categorias (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  nombre TEXT NOT NULL UNIQUE,
+  nombre VARCHAR(100) NOT NULL UNIQUE,
   descripcion TEXT,
-  orden INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 ALTER TABLE public.categorias ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Anyone can view categories"
-  ON public.categorias
-  FOR SELECT
-  USING (true);
+CREATE POLICY "categorias_read" ON public.categorias FOR SELECT USING (true);
 
-CREATE POLICY "Admins can manage categories"
-  ON public.categorias
-  FOR ALL
-  USING (public.has_role(auth.uid(), 'admin'));
+INSERT INTO public.categorias (nombre, descripcion) VALUES
+('iPhone', 'Teléfonos inteligentes'),
+('Mac', 'Computadoras'),
+('iPad', 'Tablets'),
+('Watch', 'Relojes inteligentes'),
+('AirPods', 'Auriculares'),
+('Accesorios', 'Accesorios diversos');
 
--- Create products table
-CREATE TABLE public.productos (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  nombre TEXT NOT NULL,
-  descripcion TEXT,
-  precio DECIMAL(10,2) NOT NULL,
-  precio_anterior DECIMAL(10,2),
-  stock INTEGER DEFAULT 0,
-  categoria_id UUID REFERENCES public.categorias(id) ON DELETE CASCADE,
-  destacado BOOLEAN DEFAULT false,
-  habilitado BOOLEAN DEFAULT true,
-  imagen TEXT,
-  modelo TEXT,
-  color TEXT,
-  capacidad TEXT,
-  generacion TEXT,
-  especificaciones JSONB,
-  descuento INTEGER DEFAULT 0,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
-);
+-- ==================== TABLA DE PRODUCTOS ====================
+ALTER TABLE public.productos ADD COLUMN IF NOT EXISTS categoria VARCHAR(100);
 
-ALTER TABLE public.productos ENABLE ROW LEVEL SECURITY;
+DELETE FROM public.productos;
 
-CREATE POLICY "Anyone can view enabled products"
-  ON public.productos
-  FOR SELECT
-  USING (habilitado = true OR public.has_role(auth.uid(), 'admin'));
-
-CREATE POLICY "Admins can manage products"
-  ON public.productos
-  FOR ALL
-  USING (public.has_role(auth.uid(), 'admin'));
-
--- Create promotions table
-CREATE TABLE public.promociones (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  nombre TEXT NOT NULL,
-  descripcion TEXT,
-  precio DECIMAL(10,2),
-  imagen TEXT,
-  descuento INTEGER DEFAULT 0,
-  activa BOOLEAN DEFAULT true,
-  fecha_inicio TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  fecha_fin TIMESTAMP WITH TIME ZONE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
-);
-
-ALTER TABLE public.promociones ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Anyone can view active promotions"
-  ON public.promociones
-  FOR SELECT
-  USING (activa = true OR public.has_role(auth.uid(), 'admin'));
-
-CREATE POLICY "Admins can manage promotions"
-  ON public.promociones
-  FOR ALL
-  USING (public.has_role(auth.uid(), 'admin'));
-
--- Create promotion details table
-CREATE TABLE public.detalle_promocion (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  promo_id UUID REFERENCES public.promociones(id) ON DELETE CASCADE NOT NULL,
-  producto_id UUID REFERENCES public.productos(id) ON DELETE CASCADE NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  UNIQUE(promo_id, producto_id)
-);
-
-ALTER TABLE public.detalle_promocion ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Anyone can view promotion details"
-  ON public.detalle_promocion
-  FOR SELECT
-  USING (true);
-
-CREATE POLICY "Admins can manage promotion details"
-  ON public.detalle_promocion
-  FOR ALL
-  USING (public.has_role(auth.uid(), 'admin'));
-
--- Create storage bucket for product images
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('productos', 'productos', true)
-ON CONFLICT (id) DO NOTHING;
-
--- Storage policies
-CREATE POLICY "Anyone can view product images"
-  ON storage.objects
-  FOR SELECT
-  USING (bucket_id = 'productos');
-
-CREATE POLICY "Admins can upload product images"
-  ON storage.objects
-  FOR INSERT
-  WITH CHECK (bucket_id = 'productos' AND public.has_role(auth.uid(), 'admin'));
-
-CREATE POLICY "Admins can update product images"
-  ON storage.objects
-  FOR UPDATE
-  USING (bucket_id = 'productos' AND public.has_role(auth.uid(), 'admin'));
-
-CREATE POLICY "Admins can delete product images"
-  ON storage.objects
-  FOR DELETE
-  USING (bucket_id = 'productos' AND public.has_role(auth.uid(), 'admin'));
-
--- Insert initial categories
-INSERT INTO public.categorias (nombre, descripcion, orden) VALUES
-('iPhone', 'La mejor línea de smartphones del mundo', 1),
-('Mac', 'Laptops y desktops potentes y elegantes', 2),
-('iPad', 'Tablets versátiles para trabajo y entretenimiento', 3),
-('Apple Watch', 'El reloj inteligente más avanzado', 4),
-('AirPods', 'Audio inmersivo y cancelación de ruido', 5),
-('Accesorios', 'Complementos para tus dispositivos Apple', 6);
+INSERT INTO public.productos (nombre, descripcion, precio, imagen, destacado, categoria) VALUES
+('iPhone 15 Pro', 'El último iPhone con chip A17 Pro', 999.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(1).jpeg', true, 'iPhone'),
+('MacBook Air M3', 'Portátil ultradelgado y potente', 1299.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(2).jpeg', true, 'Mac'),
+('iPad Pro 12.9', 'Tablet profesional con M2', 1099.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(3).jpeg', true, 'iPad'),
+('Apple Watch Series 9', 'Reloj inteligente con S9', 399.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(4).jpeg', true, 'Watch'),
+('AirPods Pro', 'Auriculares con cancelación activa', 249.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', true, 'AirPods');
