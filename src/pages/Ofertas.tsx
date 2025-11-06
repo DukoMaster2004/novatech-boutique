@@ -12,18 +12,22 @@ const Ofertas = () => {
   const { data: productos, isLoading } = useQuery({
     queryKey: ["ofertas"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sb = supabase as any;
+      
+      // Traer productos destacados como "ofertas"
+      const { data, error } = await sb
         .from("productos")
         .select("*")
-        .gt("descuento", 0)
-        .eq("habilitado", true)
-        .order("descuento", { ascending: false });
+        .eq("destacado", true)
+        .order("precio", { ascending: true });
 
       if (error) throw error;
       return data;
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAddToCart = (producto: any) => {
     addItem({
       id: producto.id,
@@ -37,7 +41,6 @@ const Ofertas = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-
       <main className="flex-1 py-16">
         <div className="container">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Ofertas Especiales</h1>
@@ -78,7 +81,6 @@ const Ofertas = () => {
           )}
         </div>
       </main>
-
       <Footer />
     </div>
   );

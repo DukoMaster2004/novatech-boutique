@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Package, Calendar, MapPin, DollarSign, Download } from 'lucide-react';
+import { Package, Calendar, MapPin, DollarSign, Download, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Order {
@@ -41,7 +42,6 @@ const MisCompras = () => {
     const fetchOrders = async () => {
       try {
         setIsLoading(true);
-        // Usar instancia sin tipos estrictos porque `ordenes` puede no estar en los tipos generados
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const sb = supabase as any;
         const { data, error } = await sb
@@ -51,7 +51,6 @@ const MisCompras = () => {
 
         if (error) throw error;
 
-        // Mapear y asegurar que total siempre sea un número
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mappedOrders = (data || []).map((order: any) => ({
           ...order,
@@ -168,6 +167,12 @@ MÉTODO DE PAGO: ${order.metodo_pago || 'N/A'}
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-12 px-4">
       <div className="max-w-4xl mx-auto">
+        {/* Botón volver al home */}
+        <Link to="/" className="inline-flex items-center gap-2 text-primary hover:text-primary/80 mb-6 transition-colors">
+          <ArrowLeft className="h-4 w-4" />
+          <span>Volver al Home</span>
+        </Link>
+
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Mis Compras</h1>
           <p className="text-muted-foreground">
@@ -221,6 +226,11 @@ MÉTODO DE PAGO: ${order.metodo_pago || 'N/A'}
                   ? 'Aún no has realizado ninguna compra'
                   : `No hay órdenes ${getStatusLabel(filterStatus).toLowerCase()}`}
               </p>
+              <Link to="/" className="mt-4">
+                <Button className="bg-gradient-to-r from-purple-600 to-pink-600">
+                  Explorar productos
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         ) : (

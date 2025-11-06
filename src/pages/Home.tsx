@@ -13,11 +13,12 @@ const Home = () => {
   const { data: destacados, isLoading } = useQuery({
     queryKey: ["productos-destacados"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sb = supabase as any;
+      const { data, error } = await sb
         .from("productos")
         .select("*")
         .eq("destacado", true)
-        .eq("habilitado", true)
         .limit(6);
 
       if (error) throw error;
@@ -25,6 +26,7 @@ const Home = () => {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAddToCart = (producto: any) => {
     addItem({
       id: producto.id,

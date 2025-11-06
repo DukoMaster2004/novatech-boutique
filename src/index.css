@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Apple-inspired premium design system */
+    /* Light Mode - Apple-inspired premium design system */
     --background: 0 0% 100%;
     --foreground: 0 0% 10%;
     
@@ -67,55 +67,56 @@ All colors MUST be HSL.
     --sidebar-ring: 211 100% 50%;
   }
 
+  /* Dark Mode */
   .dark {
-    --background: 0 0% 8%;
-    --foreground: 0 0% 95%;
+    --background: 217 33% 11%;
+    --foreground: 210 40% 96%;
     
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 95%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 96%;
     
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 96%;
     
     --primary: 211 100% 55%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 211 100% 70%;
     
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 217 33% 23%;
+    --secondary-foreground: 210 40% 96%;
     
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 217 33% 30%;
+    --muted-foreground: 210 16% 70%;
     
-    --accent: 0 0% 16%;
-    --accent-foreground: 0 0% 95%;
+    --accent: 217 33% 35%;
+    --accent-foreground: 210 40% 96%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 95%;
     
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
     --ring: 211 100% 55%;
     
     --gradient-primary: linear-gradient(135deg, hsl(211 100% 55%), hsl(211 100% 70%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 8%), hsl(0 0% 10%));
+    --gradient-subtle: linear-gradient(180deg, hsl(217 33% 11%), hsl(217 33% 17%));
     --shadow-elegant: 0 10px 40px -10px hsl(0 0% 0% / 0.5);
     --shadow-card: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
     --shadow-premium: 0 20px 60px -20px hsl(211 100% 55% / 0.4);
     
     --chart-1: 211 100% 55%;
-    --chart-2: 0 0% 60%;
+    --chart-2: 210 16% 70%;
     --chart-3: 211 100% 70%;
-    --chart-4: 0 0% 40%;
-    --chart-5: 0 0% 25%;
+    --chart-4: 217 33% 35%;
+    --chart-5: 217 33% 25%;
     
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 0 0% 95%;
+    --sidebar-background: 217 33% 17%;
+    --sidebar-foreground: 210 40% 96%;
     --sidebar-primary: 211 100% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 16%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 0 0% 18%;
+    --sidebar-accent: 217 33% 27%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 217 33% 25%;
     --sidebar-ring: 211 100% 55%;
   }
 }

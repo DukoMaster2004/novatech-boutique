@@ -16,7 +16,7 @@ export interface Product {
   especificaciones?: unknown | null;
   stock?: number | null;
   destacado: boolean;
-  categoria_id?: string | null;
+  categoria?: string | null;
   created_at: string;
 }
 
@@ -38,7 +38,7 @@ interface UseCategoriesResult {
   error: Error | null;
 }
 
-export const useProducts = (categoryId?: string, featured = false): UseProductsResult => {
+export const useProducts = (categoryName?: string, featured = false): UseProductsResult => {
   const [data, setData] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -56,9 +56,9 @@ export const useProducts = (categoryId?: string, featured = false): UseProductsR
           query = query.eq('destacado', true);
         }
 
-        if (categoryId && categoryId !== 'all') {
-          // La columna relacional correcta es `categoria_id`
-          query = query.eq('categoria_id', categoryId);
+        if (categoryName && categoryName !== 'all') {
+          // La columna correcta es `categoria` (texto, no ID)
+          query = query.eq('categoria', categoryName);
         }
 
         const { data: products, error } = await query.order('created_at', { ascending: false });
@@ -82,8 +82,7 @@ export const useProducts = (categoryId?: string, featured = false): UseProductsR
             especificaciones: (p as any).especificaciones ?? null,
             stock: p.stock || null,
             destacado: Boolean(p.destacado) || false,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            categoria_id: (p as any).categoria_id ?? null,
+            categoria: p.categoria || null,
             created_at: String(p.created_at) || '',
           };
           return product;
@@ -99,7 +98,7 @@ export const useProducts = (categoryId?: string, featured = false): UseProductsR
     };
 
     fetchProducts();
-  }, [categoryId, featured]);
+  }, [categoryName, featured]);
 
   return { data, isLoading, error };
 };

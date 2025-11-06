@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ProductCatalogProps {
-  categoryId?: string;
+  categoryName?: string;
   featured?: boolean;
   title?: string;
   showFilters?: boolean;
@@ -21,7 +21,7 @@ interface ProductCatalogProps {
 }
 
 const ProductCatalog = ({
-  categoryId,
+  categoryName,
   featured = false,
   title,
   showFilters = true,
@@ -29,7 +29,7 @@ const ProductCatalog = ({
   limit,
 }: ProductCatalogProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>(categoryId || 'all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryName || 'all');
   const [sortBy, setSortBy] = useState<string>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -126,7 +126,7 @@ const ProductCatalog = ({
                 <SelectContent>
                   <SelectItem value="all">Todas las categorías</SelectItem>
                   {categories?.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
+                    <SelectItem key={category.id} value={category.nombre}>
                       {category.nombre}
                     </SelectItem>
                   ))}

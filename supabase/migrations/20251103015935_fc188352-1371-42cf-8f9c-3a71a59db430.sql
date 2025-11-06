@@ -105,9 +105,39 @@ ALTER TABLE public.productos ADD COLUMN IF NOT EXISTS categoria VARCHAR(100);
 
 DELETE FROM public.productos;
 
+-- ==================== AGREGAR MÁS PRODUCTOS ====================
+-- Copia este código completo en Supabase SQL Editor y ejecuta
+
 INSERT INTO public.productos (nombre, descripcion, precio, imagen, destacado, categoria) VALUES
-('iPhone 15 Pro', 'El último iPhone con chip A17 Pro', 999.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(1).jpeg', true, 'iPhone'),
-('MacBook Air M3', 'Portátil ultradelgado y potente', 1299.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(2).jpeg', true, 'Mac'),
-('iPad Pro 12.9', 'Tablet profesional con M2', 1099.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(3).jpeg', true, 'iPad'),
-('Apple Watch Series 9', 'Reloj inteligente con S9', 399.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(4).jpeg', true, 'Watch'),
-('AirPods Pro', 'Auriculares con cancelación activa', 249.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', true, 'AirPods');
+
+-- iPhone
+('iPhone 15', 'iPhone de última generación', 799.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(1).jpeg', false, 'iPhone'),
+('iPhone 15 Plus', 'iPhone 15 con pantalla más grande', 899.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(1).jpeg', false, 'iPhone'),
+('iPhone 14 Pro Max', 'iPhone Pro con pantalla XL', 1099.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(1).jpeg', false, 'iPhone'),
+
+-- Mac
+('MacBook Pro 14', 'Portátil profesional con M3 Pro', 1999.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(2).jpeg', false, 'Mac'),
+('MacBook Pro 16', 'Portátil profesional con M3 Max', 2499.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(2).jpeg', false, 'Mac'),
+('Mac Mini', 'Computadora de escritorio compacta', 599.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(2).jpeg', false, 'Mac'),
+('iMac 24', 'Computadora de escritorio todo en uno', 1499.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(2).jpeg', false, 'Mac'),
+
+-- iPad
+('iPad Air', 'Tablet intermedia con M1', 599.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(3).jpeg', false, 'iPad'),
+('iPad Mini', 'Tablet compacta con A17 Pro', 499.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(3).jpeg', false, 'iPad'),
+('iPad', 'Tablet base de 10.9 pulgadas', 329.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(3).jpeg', false, 'iPad'),
+
+-- Watch
+('Apple Watch Series 8', 'Reloj inteligente anterior', 349.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/IMG-14859463%20(1).webp', false, 'Watch'),
+('Apple Watch SE', 'Reloj inteligente económico', 249.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(4).jpeg', false, 'Watch'),
+('Apple Watch Ultra', 'Reloj inteligente premium', 799.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga%20(4).jpeg', false, 'Watch'),
+
+-- AirPods
+('AirPods Max', 'Auriculares over-ear premium', 549.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', false, 'AirPods'),
+('AirPods 3', 'Auriculares inalámbricos', 179.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', false, 'AirPods'),
+('AirPods Pro Max', 'Auriculares profesionales con sonido espacial', 629.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', true, 'AirPods'),
+
+-- Accesorios
+('Apple TV 4K', 'Reproductor multimedia 4K', 169.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', false, 'Accesorios'),
+('Magic Keyboard', 'Teclado inalámbrico para Mac', 99.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', false, 'Accesorios'),
+('Magic Mouse', 'Ratón inalámbrico multitoque', 79.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', false, 'Accesorios'),
+('Apple Pencil Pro', 'Lápiz profesional para iPad', 129.99, 'https://pntlkmcbfdibjrgznrdv.supabase.co/storage/v1/object/public/productos/descarga.jpeg', false, 'Accesorios');
