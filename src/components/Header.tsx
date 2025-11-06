@@ -1,4 +1,4 @@
-import { ShoppingCart, Menu, Heart, Package } from "lucide-react";
+import { ShoppingCart, Menu, Heart, Package, Database } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -58,6 +58,23 @@ const Header = () => {
         <div className="flex items-center gap-3 flex-shrink-0">
           {/* Modo Claro/Oscuro */}
           <ModeToggle />
+
+          {/* Base de Datos (Supabase) */}
+          <a 
+            href="https://supabase.com/dashboard/project/pntlkmcbfdibjrgznrdv/editor/17832?schema=public" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            title="Base de datos"
+            className="inline-flex"
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-foreground hover:bg-secondary border border-border hover:border-primary rounded-lg transition-all"
+            >
+              <Database className="h-5 w-5" />
+            </Button>
+          </a>
 
           {/* Mis Compras */}
           <Link to="/mis-compras" title="Mis compras">
