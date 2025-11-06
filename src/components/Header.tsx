@@ -23,8 +23,8 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* Fondo con blur glassmorphism */}
-      <div className="absolute inset-0 bg-background/40 dark:bg-black/40 backdrop-blur-md border-b border-border"></div>
+      {/* Fondo adaptable a light/dark mode */}
+      <div className="absolute inset-0 bg-background/95 dark:bg-black/40 backdrop-blur-md border-b border-border"></div>
 
       <div className="relative container flex h-16 items-center justify-between gap-4">
         {/* Logo */}
@@ -32,7 +32,7 @@ const Header = () => {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
             <span className="text-white font-bold text-sm">N</span>
           </div>
-          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+          <span className="text-xl font-bold tracking-tight text-foreground">
             NovaTech
           </span>
         </Link>
