@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
-interface FavoriteProduct {
+export interface Favorite {
   id: string;
   nombre: string;
   precio: number;
@@ -8,63 +8,83 @@ interface FavoriteProduct {
   categoria?: string;
 }
 
-const FAVORITES_KEY = 'novatech_favorites';
+const STORAGE_KEY = "novatech_favorites";
 
 export const useFavorites = () => {
-  const [favorites, setFavorites] = useState<FavoriteProduct[]>([]);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Cargar favoritos del localStorage al montar
+  // Cargar favoritos del localStorage
   useEffect(() => {
-    const stored = localStorage.getItem(FAVORITES_KEY);
-    if (stored) {
-      try {
-        setFavorites(JSON.parse(stored));
-      } catch (error) {
-        console.error('Error parsing favorites:', error);
-        setFavorites([]);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setFavorites(Array.isArray(parsed) ? parsed : []);
       }
+    } catch (error) {
+      console.error("Error loading favorites:", error);
+      setFavorites([]);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   // Guardar favoritos en localStorage cuando cambien
   useEffect(() => {
     if (!isLoading) {
-      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
     }
   }, [favorites, isLoading]);
 
-  const addFavorite = (product: FavoriteProduct) => {
+  // Agregar a favoritos
+  const addFavorite = useCallback((favorite: Favorite) => {
     setFavorites((prev) => {
-      const exists = prev.find((fav) => fav.id === product.id);
-      if (exists) return prev;
-      return [...prev, product];
+      // Evitar duplicados
+      if (prev.some((fav) => fav.id === favorite.id)) {
+        return prev;
+      }
+      return [...prev, favorite];
     });
-  };
+  }, []);
 
-  const removeFavorite = (productId: string) => {
-    setFavorites((prev) => prev.filter((fav) => fav.id !== productId));
-  };
+  // Remover de favoritos
+  const removeFavorite = useCallback((id: string) => {
+    setFavorites((prev) => prev.filter((fav) => fav.id !== id));
+  }, []);
 
-  const isFavorite = (productId: string) => {
-    return favorites.some((fav) => fav.id === productId);
-  };
+  // Verificar si está en favoritos
+  const isFavorited = useCallback(
+    (id: string) => {
+      return favorites.some((fav) => fav.id === id);
+    },
+    [favorites]
+  );
 
-  const toggleFavorite = (product: FavoriteProduct) => {
-    if (isFavorite(product.id)) {
-      removeFavorite(product.id);
-    } else {
-      addFavorite(product);
-    }
-  };
+  // Alternar favorito
+  const toggleFavorite = useCallback(
+    (favorite: Favorite) => {
+      if (isFavorited(favorite.id)) {
+        removeFavorite(favorite.id);
+      } else {
+        addFavorite(favorite);
+      }
+    },
+    [addFavorite, removeFavorite, isFavorited]
+  );
+
+  // Limpiar favoritos
+  const clearFavorites = useCallback(() => {
+    setFavorites([]);
+  }, []);
 
   return {
     favorites,
     addFavorite,
     removeFavorite,
-    isFavorite,
+    isFavorited,
     toggleFavorite,
+    clearFavorites,
     isLoading,
   };
 };

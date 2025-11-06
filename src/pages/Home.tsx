@@ -1,15 +1,15 @@
-
-// ============= Home.tsx =============
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/hooks/useCart";
+import { useFavorites } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 
 const Home = () => {
   const { addItem } = useCart();
+  const { addFavorite, removeFavorite, isFavorited } = useFavorites();
 
   const { data: destacados, isLoading } = useQuery({
     queryKey: ["productos-destacados"],
@@ -38,9 +38,31 @@ const Home = () => {
     toast.success("Producto añadido al carrito");
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleToggleFavorite = (producto: any) => {
+    const favId = String(producto.id);
+
+    if (isFavorited(favId)) {
+      removeFavorite(favId);
+      toast.success(`${producto.nombre} removido de favoritos`);
+    } else {
+      addFavorite({
+        id: favId,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        imagen: producto.imagen,
+        categoria: producto.categoria || "destacados",
+      });
+      toast.success(`${producto.nombre} agregado a favoritos`);
+    }
+  };
+
+  const isFavoritedCheck = (productId: string | number) => {
+    return isFavorited(String(productId));
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* NO importar Header aquí - ya está en App.tsx */}
       <Hero />
 
       <main className="flex-1">
@@ -72,7 +94,10 @@ const Home = () => {
                     color={producto.color}
                     capacidad={producto.capacidad}
                     generacion={producto.generacion}
+                    rating={producto.rating || 4}
                     onAddToCart={() => handleAddToCart(producto)}
+                    onToggleFavorite={() => handleToggleFavorite(producto)}
+                    isFavorited={isFavoritedCheck(producto.id)}
                   />
                 ))}
               </div>

@@ -1,12 +1,9 @@
-import { Badge } from "@/components/ui/badge";
+import { Heart, ShoppingCart, Star, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, MessageCircle, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useFavorites } from "@/hooks/useFavorites";
-import { toast } from "sonner";
+import { useState } from "react";
 
 interface ProductCardProps {
-  id: string;
+  id: string | number;
   titulo: string;
   descripcion?: string;
   precio: number;
@@ -17,11 +14,10 @@ interface ProductCardProps {
   color?: string;
   capacidad?: string;
   generacion?: string;
-  especificaciones?: Record<string, unknown>;
-  mostrarComprar?: boolean;
-  ruta?: string;
   onAddToCart?: () => void;
-  categoria?: string;
+  onToggleFavorite?: () => void;
+  isFavorited?: boolean;
+  rating?: number;
 }
 
 const ProductCard = ({
@@ -36,161 +32,153 @@ const ProductCard = ({
   color,
   capacidad,
   generacion,
-  mostrarComprar = true,
-  ruta,
   onAddToCart,
-  categoria,
+  onToggleFavorite,
+  isFavorited = false,
+  rating = 4,
 }: ProductCardProps) => {
-  const { isFavorite, toggleFavorite } = useFavorites();
+  const [addedToCart, setAddedToCart] = useState(false);
 
-  const handleToggleFavorite = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const isCurrentlyFavorite = isFavorite(id);
-
-    toggleFavorite({
-      id,
-      nombre: titulo,
-      precio,
-      imagen,
-      categoria,
-    });
-
-    if (isCurrentlyFavorite) {
-      toast.success("Removido de favoritos");
-    } else {
-      toast.success("Agregado a favoritos ❤️");
-    }
+  const handleAddToCart = () => {
+    onAddToCart?.();
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
   };
 
-  const calcularDescuento = () => {
-    if (descuento) return descuento;
-    if (precioAntiguo && precio < precioAntiguo) {
-      return Math.round(((precioAntiguo - precio) / precioAntiguo) * 100);
-    }
-    return 0;
-  };
-
-  const porcentajeDescuento = calcularDescuento();
-
-  const enviarWhatsApp = () => {
-    const mensaje = `Hola! Me interesa el ${titulo} por $${precio.toLocaleString()}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`, "_blank");
-  };
+  const descuentoCalculado = precioAntiguo
+    ? Math.round(((precioAntiguo - precio) / precioAntiguo) * 100)
+    : descuento || 0;
 
   return (
-    <div className="group h-full">
-      <div className="relative h-full flex flex-col rounded-2xl overflow-hidden bg-card border border-border hover:border-primary transition-all duration-500 hover:shadow-lg dark:hover:shadow-purple-500/10">
-        {/* Imagen Container */}
-        <Link to={ruta || `/producto/${id}`}>
-          <div className="relative w-full bg-secondary flex items-center justify-center overflow-hidden h-64">
-            {imagen ? (
-              <img
-                src={imagen}
-                alt={titulo}
-                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 p-6"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                Sin imagen
-              </div>
-            )}
-
-            {/* Overlay en hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-            {/* Badge descuento */}
-            {porcentajeDescuento > 0 && (
-              <Badge className="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-pink-500 text-white border-0 rounded-lg px-3 py-1 font-bold shadow-lg">
-                -{porcentajeDescuento}%
-              </Badge>
-            )}
-
-            {/* Botón favorito */}
-            <button
-              onClick={handleToggleFavorite}
-              type="button"
-              className="absolute top-3 left-3 p-2 rounded-full bg-background/80 dark:bg-white/10 backdrop-blur-md border border-border dark:border-white/20 hover:bg-background dark:hover:bg-white/20 transition-all opacity-0 group-hover:opacity-100 z-10"
-            >
-              <Heart
-                className={`w-5 h-5 transition-all ${
-                  isFavorite(id)
-                    ? "fill-red-500 text-red-500 scale-110"
-                    : "text-foreground dark:text-white"
-                }`}
-              />
-            </button>
+    <div className="group bg-background border border-border rounded-2xl overflow-hidden hover:border-primary hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+      {/* Contenedor de imagen con botón favorito */}
+      <div className="relative h-48 bg-secondary">
+        {imagen ? (
+          <img
+            src={imagen}
+            alt={titulo}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+            Sin imagen
           </div>
-        </Link>
+        )}
 
-        {/* Contenido */}
-        <div className="flex-1 flex flex-col p-5 space-y-3">
-          <Link to={ruta || `/producto/${id}`}>
-            <h3 className="text-lg font-bold text-foreground group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 dark:group-hover:from-purple-400 dark:group-hover:to-pink-400 transition-all line-clamp-2">
-              {titulo}
-            </h3>
-          </Link>
+        {/* Badge Descuento */}
+        {descuentoCalculado > 0 && (
+          <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+            -{descuentoCalculado}%
+          </div>
+        )}
 
-          {descripcion && (
-            <p className="text-xs text-muted-foreground line-clamp-2 flex-1">
-              {descripcion}
-            </p>
-          )}
+        {/* Overlay con botones */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-end justify-end p-2">
+          {/* Botón Favorito */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite?.();
+            }}
+            className={`p-2 rounded-full transition-all ${
+              isFavorited
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-white text-gray-900 hover:bg-red-500 hover:text-white"
+            }`}
+          >
+            <Heart
+              className="h-5 w-5"
+              fill={isFavorited ? "currentColor" : "none"}
+            />
+          </button>
+        </div>
+      </div>
 
-          {/* Especificaciones */}
-          {(modelo || color || capacidad || generacion) && (
-            <div className="flex flex-wrap gap-2">
-              {modelo && (
-                <span className="px-2 py-1 text-xs rounded-full bg-purple-500/20 text-purple-700 dark:text-purple-300 border border-purple-500/30">
-                  {modelo}
-                </span>
-              )}
-              {color && (
-                <span className="px-2 py-1 text-xs rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30">
-                  {color}
-                </span>
-              )}
-              {capacidad && (
-                <span className="px-2 py-1 text-xs rounded-full bg-pink-500/20 text-pink-700 dark:text-pink-300 border border-pink-500/30">
-                  {capacidad}
-                </span>
-              )}
-            </div>
-          )}
+      {/* Contenido */}
+      <div className="p-4 flex flex-col flex-1">
+        {/* Título */}
+        <h3 className="font-bold text-foreground mb-1 line-clamp-2">{titulo}</h3>
 
-          {/* Precio */}
-          <div className="flex items-baseline gap-2 pt-2">
-            <span className="text-2xl font-bold text-primary">
-              ${precio.toLocaleString()}
+        {/* Descripción */}
+        {descripcion && (
+          <p className="text-xs text-muted-foreground mb-2 line-clamp-1">
+            {descripcion}
+          </p>
+        )}
+
+        {/* Especificaciones */}
+        <div className="mb-3 flex flex-wrap gap-1">
+          {modelo && (
+            <span className="text-xs bg-secondary px-2 py-1 rounded text-muted-foreground">
+              {modelo}
             </span>
-            {precioAntiguo && precioAntiguo > precio && (
-              <span className="text-xs text-muted-foreground line-through">
-                ${precioAntiguo.toLocaleString()}
-              </span>
+          )}
+          {color && (
+            <span className="text-xs bg-secondary px-2 py-1 rounded text-muted-foreground">
+              {color}
+            </span>
+          )}
+          {capacidad && (
+            <span className="text-xs bg-secondary px-2 py-1 rounded text-muted-foreground">
+              {capacidad}
+            </span>
+          )}
+          {generacion && (
+            <span className="text-xs bg-secondary px-2 py-1 rounded text-muted-foreground">
+              {generacion}
+            </span>
+          )}
+        </div>
+
+        {/* Rating */}
+        <div className="flex items-center gap-1 mb-3">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`h-4 w-4 ${
+                i < rating
+                  ? "fill-yellow-400 text-yellow-400"
+                  : "text-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Precios */}
+        <div className="mb-4 flex-1">
+          <div className="flex items-center gap-2">
+            <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              S/{precio.toLocaleString()}
+            </p>
+            {precioAntiguo && (
+              <p className="text-sm text-muted-foreground line-through">
+                S/{precioAntiguo.toLocaleString()}
+              </p>
             )}
           </div>
         </div>
 
-        {/* Acciones */}
-        {mostrarComprar && (
-          <div className="flex gap-2 p-5 pt-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <Button
-              onClick={onAddToCart}
-              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0 rounded-lg h-10 text-sm font-semibold text-white group/btn"
-            >
-              <ShoppingCart className="w-4 h-4 mr-2 group-hover/btn:scale-110 transition-transform" />
-              Añadir
-            </Button>
-            <Button
-              variant="outline"
-              onClick={enviarWhatsApp}
-              className="px-3 h-10 rounded-lg border-border hover:bg-secondary"
-            >
-              <MessageCircle className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
+        {/* Botón Carrito */}
+        <Button
+          onClick={handleAddToCart}
+          className={`w-full text-white rounded-xl flex items-center justify-center gap-2 transition-all ${
+            addedToCart
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+          }`}
+        >
+          {addedToCart ? (
+            <>
+              <Check className="h-4 w-4" />
+              ¡Agregado!
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="h-4 w-4" />
+              Agregar al carrito
+            </>
+          )}
+        </Button>
       </div>
     </div>
   );

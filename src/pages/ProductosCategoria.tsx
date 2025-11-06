@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useParams } from "react-router-dom";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/hooks/useCart";
+import { useFavorites } from "@/hooks/useFavorites";
 import { toast } from "sonner";
 
 const ProductosCategoria = () => {
   const { categoria } = useParams();
   const { addItem } = useCart();
+  const { addFavorite, removeFavorite, favorites } = useFavorites();
   
   // Mapear URLs a categorías correctas en la BD
   const categoriasMap: Record<string, string> = {
@@ -22,7 +23,7 @@ const ProductosCategoria = () => {
   };
   
   const categoriaNombre = categoriasMap[categoria?.toLowerCase() || ''] || categoria;
-
+  
   const { data: productos, isLoading } = useQuery({
     queryKey: ["productos", categoria],
     queryFn: async () => {
@@ -35,13 +36,13 @@ const ProductosCategoria = () => {
         .select("*")
         .eq("categoria", categoriaNombre)
         .order("nombre", { ascending: true });
-
+      
       if (error) throw error;
       return data;
     },
     enabled: !!categoria,
   });
-
+  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAddToCart = (producto: any) => {
     addItem({
@@ -53,16 +54,38 @@ const ProductosCategoria = () => {
     toast.success("Producto añadido al carrito");
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleToggleFavorite = (producto: any) => {
+    const favId = String(producto.id);
+    
+    if (isFavorited(favId)) {
+      removeFavorite(favId);
+      toast.success(`${producto.nombre} removido de favoritos`);
+    } else {
+      addFavorite({
+        id: favId,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        imagen: producto.imagen,
+        categoria: categoriaNombre,
+      });
+      toast.success(`${producto.nombre} agregado a favoritos`);
+    }
+  };
+
+  const isFavoritedCheck = (productId: string | number) => {
+    return isFavorited(String(productId));
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
       <main className="flex-1 py-16">
         <div className="container">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{categoriaNombre}</h1>
           <p className="text-muted-foreground mb-12">
             Descubre toda nuestra colección de {categoriaNombre}
           </p>
-
+          
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
@@ -85,7 +108,10 @@ const ProductosCategoria = () => {
                   color={producto.color}
                   capacidad={producto.capacidad}
                   generacion={producto.generacion}
+                  rating={producto.rating || 4}
                   onAddToCart={() => handleAddToCart(producto)}
+                  onToggleFavorite={() => handleToggleFavorite(producto)}
+                  isFavorited={isFavoritedCheck(producto.id)}
                 />
               ))}
             </div>

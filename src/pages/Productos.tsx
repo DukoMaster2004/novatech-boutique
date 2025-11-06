@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Heart, ShoppingCart, Star, Filter } from "lucide-react";
+import { Heart, ShoppingCart, Star, Filter, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/hooks/useCart";
+import { useFavorites } from "@/hooks/useFavorites";
+import { toast } from "sonner";
 
 const ProductosPage = () => {
   const { categoria } = useParams();
+  const { addItem } = useCart();
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
+  const [addedToCart, setAddedToCart] = useState<number | null>(null);
+
   const [filters, setFilters] = useState({
     priceRange: [0, 5000],
     rating: 0,
@@ -77,6 +84,44 @@ const ProductosPage = () => {
     return true;
   });
 
+  // Manejo del carrito
+  const handleAddToCart = (producto: typeof productos[0]) => {
+    addItem({
+      id: producto.id.toString(),
+      nombre: producto.nombre,
+      precio: producto.precio,
+      imagen: producto.imagen,
+    });
+    toast.success(`${producto.nombre} agregado al carrito`);
+    
+    // Mostrar confirmación visual
+    setAddedToCart(producto.id);
+    setTimeout(() => setAddedToCart(null), 2000);
+  };
+
+  // Manejo de favoritos
+  const handleToggleFavorite = (producto: typeof productos[0]) => {
+    const isFavorited = favorites.some(fav => fav.id === producto.id.toString());
+    
+    if (isFavorited) {
+      removeFavorite(producto.id.toString());
+      toast.success(`${producto.nombre} removido de favoritos`);
+    } else {
+      addFavorite({
+        id: producto.id.toString(),
+        nombre: producto.nombre,
+        precio: producto.precio,
+        imagen: producto.imagen,
+        categoria: producto.categoria,
+      });
+      toast.success(`${producto.nombre} agregado a favoritos`);
+    }
+  };
+
+  const isFavorited = (productId: number) => {
+    return favorites.some(fav => fav.id === productId.toString());
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -123,7 +168,7 @@ const ProductosPage = () => {
                   Calificación mínima
                 </label>
                 <div className="space-y-2">
-                  {[5, 4, 3, 2, 1].map(rating => (
+                  {[5, 4, 3, 2, 1, 0].map(rating => (
                     <label key={rating} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="radio"
@@ -163,7 +208,7 @@ const ProductosPage = () => {
                 {filteredProducts.map(producto => (
                   <div
                     key={producto.id}
-                    className="group bg-background border border-border rounded-2xl overflow-hidden hover:border-primary hover:shadow-xl transition-all duration-300"
+                    className="group bg-background border border-border rounded-2xl overflow-hidden hover:border-primary hover:shadow-xl transition-all duration-300 flex flex-col"
                   >
                     {/* Imagen */}
                     <div className="relative h-48 overflow-hidden bg-secondary">
@@ -172,13 +217,23 @@ const ProductosPage = () => {
                         alt={producto.nombre}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
-                      <button className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-black/90 rounded-full hover:bg-red-500 hover:text-white transition-all">
-                        <Heart className="h-5 w-5" />
+                      <button
+                        onClick={() => handleToggleFavorite(producto)}
+                        className={`absolute top-3 right-3 p-2 rounded-full transition-all ${
+                          isFavorited(producto.id)
+                            ? 'bg-red-500 text-white'
+                            : 'bg-white/90 dark:bg-black/90 hover:bg-red-500 hover:text-white'
+                        }`}
+                      >
+                        <Heart
+                          className="h-5 w-5"
+                          fill={isFavorited(producto.id) ? "currentColor" : "none"}
+                        />
                       </button>
                     </div>
 
                     {/* Info */}
-                    <div className="p-4">
+                    <div className="p-4 flex flex-col flex-1">
                       <h3 className="font-bold text-foreground mb-1 line-clamp-2">
                         {producto.nombre}
                       </h3>
@@ -188,22 +243,42 @@ const ProductosPage = () => {
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${i < producto.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                            className={`h-4 w-4 ${
+                              i < producto.rating
+                                ? 'fill-yellow-400 text-yellow-400'
+                                : 'text-gray-300'
+                            }`}
                           />
                         ))}
                       </div>
 
                       {/* Precio */}
-                      <div className="mb-4">
+                      <div className="mb-4 flex-1">
                         <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                           S/{producto.precio}
                         </p>
                       </div>
 
                       {/* Botón Carrito */}
-                      <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl flex items-center justify-center gap-2">
-                        <ShoppingCart className="h-4 w-4" />
-                        Agregar al carrito
+                      <Button
+                        onClick={() => handleAddToCart(producto)}
+                        className={`w-full text-white rounded-xl flex items-center justify-center gap-2 transition-all ${
+                          addedToCart === producto.id
+                            ? 'bg-green-600 hover:bg-green-700'
+                            : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+                        }`}
+                      >
+                        {addedToCart === producto.id ? (
+                          <>
+                            <Check className="h-4 w-4" />
+                            ¡Agregado!
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingCart className="h-4 w-4" />
+                            Agregar al carrito
+                          </>
+                        )}
                       </Button>
                     </div>
                   </div>

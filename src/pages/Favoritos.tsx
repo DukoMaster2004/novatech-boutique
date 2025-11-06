@@ -1,10 +1,10 @@
-
-// ============= Favoritos.tsx =============
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
-import { Heart, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Heart, ShoppingBag, ArrowLeft, Trash2, Check } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { toast } from "sonner";
 
 interface FavoriteProduct {
   id: string;
@@ -17,6 +17,9 @@ interface FavoriteProduct {
 const Favoritos = () => {
   const [favorites, setFavorites] = useState<FavoriteProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [addedItems, setAddedItems] = useState<string[]>([]);
+  const { addItem } = useCart();
 
   useEffect(() => {
     const stored = localStorage.getItem("novatech_favorites");
@@ -35,7 +38,52 @@ const Favoritos = () => {
   const removeFavorite = (productId: string) => {
     const updated = favorites.filter((fav) => fav.id !== productId);
     setFavorites(updated);
+    setSelectedItems(prev => prev.filter(id => id !== productId));
     localStorage.setItem("novatech_favorites", JSON.stringify(updated));
+    toast.success("Producto removido de favoritos");
+  };
+
+  const toggleSelect = (productId: string) => {
+    setSelectedItems(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.length === favorites.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(favorites.map(fav => fav.id));
+    }
+  };
+
+  const handleAddSelectedToCart = () => {
+    if (selectedItems.length === 0) {
+      toast.error("Selecciona al menos un producto");
+      return;
+    }
+
+    selectedItems.forEach((id) => {
+      const product = favorites.find(fav => fav.id === id);
+      if (product) {
+        addItem({
+          id: product.id,
+          nombre: product.nombre,
+          precio: product.precio,
+          imagen: product.imagen,
+        });
+        setAddedItems(prev => [...prev, id]);
+      }
+    });
+
+    toast.success(`${selectedItems.length} producto(s) agregado(s) al carrito`);
+    
+    setTimeout(() => {
+      setSelectedItems([]);
+      setAddedItems([]);
+    }, 2000);
   };
 
   if (isLoading) {
@@ -69,12 +117,68 @@ const Favoritos = () => {
 
           {favorites.length > 0 ? (
             <div>
+              {/* Barra de selección */}
+              <div className="mb-6 p-4 bg-secondary/30 rounded-xl border border-border flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.length === favorites.length && favorites.length > 0}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 rounded"
+                    />
+                    <span className="text-sm font-medium">
+                      Seleccionar todo ({selectedItems.length}/{favorites.length})
+                    </span>
+                  </label>
+                </div>
+
+                <Button
+                  onClick={handleAddSelectedToCart}
+                  disabled={selectedItems.length === 0}
+                  className={`${
+                    addedItems.length > 0
+                      ? "bg-green-600 hover:bg-green-700"
+                      : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                  } text-white`}
+                >
+                  {addedItems.length > 0 ? (
+                    <>
+                      <Check className="mr-2 h-4 w-4" />
+                      ¡Agregado!
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="mr-2 h-4 w-4" />
+                      Agregar seleccionados al carrito
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Grid de productos */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 {favorites.map((product) => (
                   <div
                     key={product.id}
-                    className="rounded-2xl overflow-hidden bg-card border border-border hover:border-primary transition-all"
+                    className={`rounded-2xl overflow-hidden bg-card border-2 transition-all cursor-pointer ${
+                      selectedItems.includes(product.id)
+                        ? "border-primary shadow-lg"
+                        : "border-border hover:border-primary"
+                    }`}
+                    onClick={() => toggleSelect(product.id)}
                   >
+                    {/* Checkbox */}
+                    <div className="absolute top-2 left-2 z-10">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.includes(product.id)}
+                        onChange={() => toggleSelect(product.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-5 h-5 rounded cursor-pointer"
+                      />
+                    </div>
+
                     <div className="relative w-full h-64 bg-secondary flex items-center justify-center overflow-hidden">
                       {product.imagen ? (
                         <img
@@ -97,20 +201,27 @@ const Favoritos = () => {
                             {product.categoria}
                           </p>
                         )}
-                        <p className="text-2xl font-bold text-primary">
-                          ${product.precio.toLocaleString()}
+                        <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                          S/{product.precio.toLocaleString()}
                         </p>
                       </div>
 
                       <div className="flex gap-2">
                         <button
-                          onClick={() => removeFavorite(product.id)}
-                          className="flex-1 px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors font-semibold"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeFavorite(product.id);
+                          }}
+                          className="flex-1 px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors font-semibold flex items-center justify-center gap-2"
                         >
-                          <Heart className="w-4 h-4 inline mr-2 fill-current" />
+                          <Trash2 className="w-4 h-4" />
                           Remover
                         </button>
-                        <Link to={`/productos/${product.categoria?.toLowerCase()}`} className="flex-1">
+                        <Link 
+                          to={`/productos/${product.categoria?.toLowerCase()}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex-1"
+                        >
                           <button className="w-full px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold">
                             Ver más
                           </button>
