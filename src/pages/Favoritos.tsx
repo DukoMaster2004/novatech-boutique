@@ -1,7 +1,8 @@
+
+// ============= Favoritos.tsx =============
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Heart, ShoppingBag, ArrowLeft } from "lucide-react";
 
@@ -40,7 +41,6 @@ const Favoritos = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <Header />
         <main className="flex-1 flex items-center justify-center">
           <p className="text-muted-foreground">Cargando favoritos...</p>
         </main>
@@ -51,7 +51,6 @@ const Favoritos = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
       <main className="flex-1 py-16">
         <div className="container">
           <div className="mb-12">

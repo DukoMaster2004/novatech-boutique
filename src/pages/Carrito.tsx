@@ -1,3 +1,4 @@
+// ============= Carrito.tsx =============
 import { useState } from "react";
 import { Trash2, MessageCircle, ShoppingBag, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCart } from "@/hooks/useCart";
 import { useCreateOrder, type CreateOrderData } from "@/hooks/useOrders";
@@ -101,7 +101,6 @@ const Carrito = () => {
   if (items.length === 0 && !showCheckout) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="container text-center py-16">
             <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
@@ -119,14 +118,8 @@ const Carrito = () => {
     );
   }
 
-  function removeItem(id: string): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-
       <main className="flex-1 py-16">
         <div className="container max-w-6xl">
           <h1 className="text-4xl font-bold mb-8">Carrito de Compras</h1>
@@ -182,7 +175,7 @@ const Carrito = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => removeFromCart(item.id)}
                             className="text-destructive"
                           >
                             <Trash2 className="h-4 w-4 mr-2" />

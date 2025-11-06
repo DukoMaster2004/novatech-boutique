@@ -1,42 +1,45 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@/components/theme-provider";
-import Home from "./pages/Home";
-import ProductosCategoria from "./pages/ProductosCategoria";
-import Ofertas from "./pages/Ofertas";
-import Carrito from "./pages/Carrito";
-import Checkout from "./pages/Checkout";
-import MisCompras from "./pages/MisCompras";
-import Favoritos from "./pages/Favoritos";
-import NotFound from "./pages/NotFound";
+// ============= App.tsx =============
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "@/components/Header";
+import Home from "@/pages/Home";
+import BlogPage from "@/pages/BlogPage";
+import ContactPage from "@/pages/ContactPage";
+import Ofertas from "@/pages/Ofertas";
+import Carrito from "@/pages/Carrito";
+import Productos from "@/pages/Productos";
+import Favoritos from "@/pages/Favoritos";
+import MisCompras from "@/pages/MisCompras";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <ThemeProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+function App() {
+  return (
+    <Router>
+      <div className="flex flex-col min-h-screen bg-background">
+        <Header /> {/* Header aquí - aparece en TODAS las páginas */}
+        
+        <main className="flex-1">
           <Routes>
+            {/* Rutas principales */}
             <Route path="/" element={<Home />} />
-            <Route path="/productos/:categoria" element={<ProductosCategoria />} />
+            <Route path="/productos" element={<Productos />} />
+            <Route path="/productos/:categoria" element={<Productos />} />
+            
+            {/* Blog y Contacto */}
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/contacto" element={<ContactPage />} />
+            
+            {/* Otras rutas */}
             <Route path="/ofertas" element={<Ofertas />} />
             <Route path="/carrito" element={<Carrito />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/mis-compras" element={<MisCompras />} />
             <Route path="/favoritos" element={<Favoritos />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="/mis-compras" element={<MisCompras />} />
+            <Route path="/rastrear" element={<div className="p-8">Rastrear Pedido</div>} />
+            <Route path="/cuenta" element={<div className="p-8">Mi Cuenta</div>} />
           </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ThemeProvider>
-);
+        </main>
+      </div>
+    </Router>
+  );
+}
 
 export default App;
+

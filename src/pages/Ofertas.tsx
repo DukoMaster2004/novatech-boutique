@@ -1,89 +1,149 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import ProductCard from "@/components/ProductCard";
-import { useCart } from "@/hooks/useCart";
-import { toast } from "sonner";
+// ============= Ofertas.tsx =============
+import { useState } from "react";
+import { Heart, ShoppingCart, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const Ofertas = () => {
-  const { addItem } = useCart();
+const OfertasPage = () => {
+  const [favorites, setFavorites] = useState<number[]>([]);
 
-  const { data: productos, isLoading } = useQuery({
-    queryKey: ["ofertas"],
-    queryFn: async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const sb = supabase as any;
-      
-      // Traer productos destacados como "ofertas"
-      const { data, error } = await sb
-        .from("productos")
-        .select("*")
-        .eq("destacado", true)
-        .order("precio", { ascending: true });
-
-      if (error) throw error;
-      return data;
+  // Datos de ejemplo - ofertas especiales
+  const ofertas = [
+    {
+      id: 1,
+      nombre: "AirPods Pro",
+      precio: 279,
+      precioAnterior: 349,
+      descuento: 20,
+      imagen: "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
     },
-  });
+    {
+      id: 2,
+      nombre: "Apple Watch Series 9",
+      precio: 599,
+      precioAnterior: 799,
+      descuento: 25,
+      imagen: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 3,
+      nombre: "iPad Air",
+      precio: 699,
+      precioAnterior: 899,
+      descuento: 22,
+      imagen: "https://images.unsplash.com/photo-1526408529623-b07dbf714a9f?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 4,
+      nombre: "Magic Keyboard",
+      precio: 149,
+      precioAnterior: 199,
+      descuento: 25,
+      imagen: "https://images.unsplash.com/photo-1587829191301-cd17e9ec3df1?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    }
+  ];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleAddToCart = (producto: any) => {
-    addItem({
-      id: producto.id,
-      nombre: producto.nombre,
-      precio: producto.precio,
-      imagen: producto.imagen,
-    });
-    toast.success("Producto añadido al carrito");
+  const toggleFavorite = (id: number) => {
+    setFavorites(prev =>
+      prev.includes(id) ? prev.filter(fav => fav !== id) : [...prev, id]
+    );
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 py-16">
-        <div className="container">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Ofertas Especiales</h1>
-          <p className="text-muted-foreground mb-12">
-            Los mejores precios en productos Apple seleccionados
-          </p>
-
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-96 bg-secondary animate-pulse rounded-lg" />
-              ))}
-            </div>
-          ) : productos && productos.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {productos.map((producto) => (
-                <ProductCard
-                  key={producto.id}
-                  id={producto.id}
-                  titulo={producto.nombre}
-                  descripcion={producto.descripcion}
-                  precio={producto.precio}
-                  imagen={producto.imagen}
-                  precioAntiguo={producto.precio_anterior}
-                  descuento={producto.descuento}
-                  modelo={producto.modelo}
-                  color={producto.color}
-                  capacidad={producto.capacidad}
-                  generacion={producto.generacion}
-                  onAddToCart={() => handleAddToCart(producto)}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center text-muted-foreground py-12">
-              <p>No hay ofertas disponibles en este momento.</p>
-            </div>
-          )}
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-900 dark:to-pink-900 py-16">
+        <div className="container mx-auto px-4 text-white">
+          <h1 className="text-4xl font-bold mb-2">Ofertas Especiales</h1>
+          <p className="text-purple-100">Los mejores precios en productos Apple seleccionados</p>
         </div>
-      </main>
-      <Footer />
+      </section>
+
+      {/* Ofertas Grid */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {ofertas.map(oferta => (
+              <div
+                key={oferta.id}
+                className="group bg-background border border-border rounded-2xl overflow-hidden hover:border-primary hover:shadow-xl transition-all duration-300"
+              >
+                {/* Imagen */}
+                <div className="relative h-48 overflow-hidden bg-secondary">
+                  <img
+                    src={oferta.imagen}
+                    alt={oferta.nombre}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  {/* Badge Descuento */}
+                  <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                    -{oferta.descuento}%
+                  </div>
+                  {/* Favorito */}
+                  <button
+                    onClick={() => toggleFavorite(oferta.id)}
+                    className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-black/90 rounded-full hover:bg-red-500 hover:text-white transition-all"
+                  >
+                    <Heart
+                      className={`h-5 w-5 ${
+                        favorites.includes(oferta.id) ? 'fill-red-500 text-red-500' : ''
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Info */}
+                <div className="p-4">
+                  <h3 className="font-bold text-foreground mb-2 line-clamp-2">
+                    {oferta.nombre}
+                  </h3>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${
+                          i < oferta.rating
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Precios */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2">
+                      <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        S/{oferta.precio}
+                      </p>
+                      <p className="text-sm text-muted-foreground line-through">
+                        S/{oferta.precioAnterior}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Botón */}
+                  <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl flex items-center justify-center gap-2">
+                    <ShoppingCart className="h-4 w-4" />
+                    Agregar al carrito
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
 
-export default Ofertas;
+export default OfertasPage;
