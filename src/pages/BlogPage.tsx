@@ -18,7 +18,7 @@ const BlogPage = () => {
       category: "Reseñas",
       author: "Juan Pérez",
       date: "2024-01-15",
-      image: "https://images.unsplash.com/photo-1511707267537-b85faf00021e?w=800&h=400&fit=crop",
+      image: "https://www.preciosadictos.com/blog/wp-content/uploads/2025/05/Los-colores-del-iPhone-15-Pro_-guia-para-elegir-con-acierto.webp",
       readTime: "8 min"
     },
     {
@@ -48,7 +48,7 @@ const BlogPage = () => {
       category: "Noticias",
       author: "Ana Martínez",
       date: "2024-01-08",
-      image: "https://images.unsplash.com/photo-1526408529623-b07dbf714a9f?w=800&h=400&fit=crop",
+      image: "https://gestion.pe/resizer/1NAFenwLhP2u22bf-9J0twgKRFE=/1200x675/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/BX3RDPWKDZD7NMJ4WB2WIL56KA.jpg",
       readTime: "5 min"
     },
     {

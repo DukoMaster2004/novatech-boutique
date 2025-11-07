@@ -38,7 +38,7 @@ const OfertasPage = () => {
       precio: 699,
       precioAnterior: 899,
       descuento: 22,
-      imagen: "https://images.unsplash.com/photo-1526408529623-b07dbf714a9f?w=300&h=300&fit=crop",
+      imagen: "https://s.yimg.com/ny/api/res/1.2/0B9Y09qPr49kI5ZXwsk.yA--/YXBwaWQ9aGlnaGxhbmRlcjt3PTI0MDA7aD0xMzUw/https://s.yimg.com/os/creatr-uploaded-images/2022-03/548fd670-a47e-11ec-b9ef-ef1d74d381f2",
       rating: 4,
       stock: true
     },
@@ -48,7 +48,7 @@ const OfertasPage = () => {
       precio: 149,
       precioAnterior: 199,
       descuento: 25,
-      imagen: "https://images.unsplash.com/photo-1587829191301-cd17e9ec3df1?w=300&h=300&fit=crop",
+      imagen: "https://cdn.cultofmac.com/wp-content/uploads/2024/11/Magic-Keyboards-with-USB-C.jpg",
       rating: 4,
       stock: true
     }
