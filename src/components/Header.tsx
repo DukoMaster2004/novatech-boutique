@@ -1,4 +1,4 @@
-import { ShoppingCart, Menu, Heart, Package, Database, ChevronDown, Search } from "lucide-react";
+import { ShoppingCart, Menu, Heart, Package, Database, ChevronDown, Search, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -6,10 +6,13 @@ import SearchBar from "@/components/SearchBar";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useState, useEffect } from "react";
 import { useFavorites } from "@/hooks/useFavorites";
+import { Input } from "@/components/ui/input";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [mobileSearchQuery, setMobileSearchQuery] = useState("");
   const { favorites } = useFavorites();
 
   useEffect(() => {
@@ -117,14 +120,15 @@ const Header = () => {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-1 lg:gap-2 flex-shrink-0">
-              {/* Search - Mobile */}
+              {/* Search - Mobile - MEJORADO */}
               <div className="lg:hidden">
                 <Button
                   variant="ghost"
                   size="icon"
                   className="text-foreground hover:bg-secondary rounded-lg transition-all"
+                  onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
                 >
-                  <Search className="h-5 w-5" />
+                  {isMobileSearchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
                 </Button>
               </div>
 
@@ -273,10 +277,29 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Mobile Search Bar */}
-          <div className="lg:hidden pb-3">
-            <SearchBar />
-          </div>
+          {/* Mobile Search Bar - MEJORADO */}
+          {isMobileSearchOpen && (
+            <div className="lg:hidden pb-3 animate-in fade-in slide-in-from-top-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Buscar productos..."
+                  value={mobileSearchQuery}
+                  onChange={(e) => setMobileSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 w-full"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && mobileSearchQuery.trim()) {
+                      // Aquí puedes navegar o buscar
+                      console.log("Buscando:", mobileSearchQuery);
+                      setIsMobileSearchOpen(false);
+                    }
+                  }}
+                  autoFocus
+                />
+              </div>
+            </div>
+          )}
         </div>
       </header>
     </>
