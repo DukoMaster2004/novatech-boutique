@@ -58,7 +58,7 @@ const ProductosCategoria = () => {
   const handleToggleFavorite = (producto: any) => {
     const favId = String(producto.id);
     
-    if (isFavorited(favId)) {
+    if (favorites.some(fav => fav.id === favId)) {
       removeFavorite(favId);
       toast.success(`${producto.nombre} removido de favoritos`);
     } else {
@@ -74,7 +74,7 @@ const ProductosCategoria = () => {
   };
 
   const isFavoritedCheck = (productId: string | number) => {
-    return isFavorited(String(productId));
+    return favorites.some(fav => fav.id === String(productId));
   };
 
   return (
