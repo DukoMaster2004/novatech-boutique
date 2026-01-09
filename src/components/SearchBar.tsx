@@ -7,11 +7,8 @@ import { Input } from '@/components/ui/input';
 interface Product {
   id: string;
   nombre: string;
-  categoria?: string;
   precio: number;
   imagen?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
 }
 
 const SearchBar = () => {
@@ -32,7 +29,7 @@ const SearchBar = () => {
       try {
         const { data, error } = await supabase
           .from('productos')
-          .select('*')
+          .select('id, nombre, precio, imagen')
           .ilike('nombre', `%${search}%`)
           .limit(5);
 
@@ -95,7 +92,7 @@ const SearchBar = () => {
               {results.map((product) => (
                 <Link
                   key={product.id}
-                  to={`/productos/${(product.categoria || '').toLowerCase()}`}
+                  to={`/productos`}
                   onClick={() => handleClear()}
                   className="flex items-center gap-3 p-3 hover:bg-secondary rounded-lg transition-colors"
                 >
@@ -108,11 +105,8 @@ const SearchBar = () => {
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm truncate">{product.nombre}</p>
-                    {product.categoria && (
-                      <p className="text-xs text-muted-foreground">{product.categoria}</p>
-                    )}
                   </div>
-                  <p className="font-semibold text-sm whitespace-nowrap">${product.precio}</p>
+                  <p className="font-semibold text-sm whitespace-nowrap">S/{product.precio}</p>
                 </Link>
               ))}
             </div>
