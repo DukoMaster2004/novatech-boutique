@@ -7,12 +7,22 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { useState, useEffect } from "react";
 import { useFavorites } from "@/hooks/useFavorites";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Product {
+  id: string;
+  nombre: string;
+  precio: number;
+  imagen?: string;
+}
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [mobileSearchQuery, setMobileSearchQuery] = useState("");
+  const [mobileSearchResults, setMobileSearchResults] = useState<Product[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const { favorites } = useFavorites();
 
   useEffect(() => {
@@ -22,6 +32,46 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Búsqueda en móvil - CONECTADO A BD
+  useEffect(() => {
+    if (mobileSearchQuery.trim().length === 0) {
+      setMobileSearchResults([]);
+      return;
+    }
+
+    const searchProducts = async () => {
+      setIsSearching(true);
+      try {
+        const { data, error } = await supabase
+          .from('productos')
+          .select('id, nombre, precio, imagen')
+          .ilike('nombre', `%${mobileSearchQuery}%`)
+          .limit(5);
+
+        if (error) {
+          console.error('Error:', error);
+          setMobileSearchResults([]);
+          return;
+        }
+        setMobileSearchResults((data as Product[]) || []);
+      } catch (error) {
+        console.error('Search error:', error);
+        setMobileSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const timer = setTimeout(searchProducts, 300);
+    return () => clearTimeout(timer);
+  }, [mobileSearchQuery]);
+
+  const handleSearchItemClick = () => {
+    setIsMobileSearchOpen(false);
+    setMobileSearchQuery('');
+    setMobileSearchResults([]);
+  };
 
   const categories = [
     { name: "iPhone", path: "/productos/iphone", icon: "📱" },
@@ -120,7 +170,7 @@ const Header = () => {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-1 lg:gap-2 flex-shrink-0">
-              {/* Search - Mobile - MEJORADO */}
+              {/* Search - Mobile */}
               <div className="lg:hidden">
                 <Button
                   variant="ghost"
@@ -277,27 +327,58 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Mobile Search Bar - MEJORADO */}
+          {/* Mobile Search Bar - FUNCIONAL CON BD */}
           {isMobileSearchOpen && (
-            <div className="lg:hidden pb-3 animate-in fade-in slide-in-from-top-2">
+            <div className="lg:hidden pb-4 animate-in fade-in slide-in-from-top-2">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
                   type="text"
                   placeholder="Buscar productos..."
                   value={mobileSearchQuery}
                   onChange={(e) => setMobileSearchQuery(e.target.value)}
                   className="pl-10 pr-4 w-full"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter' && mobileSearchQuery.trim()) {
-                      // Aquí puedes navegar o buscar
-                      console.log("Buscando:", mobileSearchQuery);
-                      setIsMobileSearchOpen(false);
-                    }
-                  }}
                   autoFocus
                 />
               </div>
+
+              {/* Resultados de búsqueda móvil */}
+              {mobileSearchQuery.trim() && (
+                <div className="mt-3 bg-background border border-input rounded-lg shadow-lg max-h-80 overflow-y-auto">
+                  {isSearching ? (
+                    <div className="p-4 text-center text-sm text-muted-foreground">
+                      Buscando...
+                    </div>
+                  ) : mobileSearchResults.length > 0 ? (
+                    <div className="p-2 space-y-2">
+                      {mobileSearchResults.map((product) => (
+                        <Link
+                          key={product.id}
+                          to={`/productos`}
+                          onClick={handleSearchItemClick}
+                          className="flex items-center gap-3 p-3 hover:bg-secondary rounded-lg transition-colors"
+                        >
+                          {product.imagen && (
+                            <img
+                              src={product.imagen}
+                              alt={product.nombre}
+                              className="h-10 w-10 object-contain rounded bg-secondary p-1 flex-shrink-0"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{product.nombre}</p>
+                          </div>
+                          <p className="font-semibold text-sm whitespace-nowrap flex-shrink-0">S/{product.precio}</p>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 text-center text-sm text-muted-foreground">
+                      No se encontraron productos
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
