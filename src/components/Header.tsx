@@ -102,14 +102,39 @@ const Header = () => {
       >
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between gap-3 lg:gap-6">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 flex-shrink-0 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center transform group-hover:scale-105 transition-transform shadow-md">
-                <span className="text-white font-bold text-lg">N</span>
+            {/* Logo Moderno */}
+            <Link to="/" className="flex items-center space-x-3 flex-shrink-0 group">
+              {/* Icono del Logo - Diseño Moderno */}
+              <div className="relative w-11 h-11 rounded-2xl overflow-hidden flex-shrink-0">
+                {/* Fondo con gradiente */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-cyan-400 to-teal-500 opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                {/* Patrón geométrico animado */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {/* Triángulo superior */}
+                  <div className="absolute w-0 h-0 border-l-3 border-r-3 border-b-6 border-l-transparent border-r-transparent border-b-white opacity-80 group-hover:opacity-100 transition-opacity" style={{ top: '3px' }} />
+                  
+                  {/* Círculo central */}
+                  <div className="w-4 h-4 rounded-full bg-white/90 group-hover:bg-white transition-all duration-300" />
+                  
+                  {/* Líneas laterales */}
+                  <div className="absolute left-2 top-1/2 w-2 h-0.5 bg-white/70 transform -translate-y-1/2 group-hover:w-3 transition-all duration-300" />
+                  <div className="absolute right-2 top-1/2 w-2 h-0.5 bg-white/70 transform -translate-y-1/2 group-hover:w-3 transition-all duration-300" />
+                </div>
+
+                {/* Brillo animado en hover */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 transform -rotate-45" />
               </div>
-              <span className="text-lg md:text-2xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent hidden sm:inline">
-                NovaTech
-              </span>
+
+              {/* Nombre */}
+              <div className="hidden sm:flex flex-col gap-0.5">
+                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-500 dark:from-blue-400 dark:via-cyan-300 dark:to-teal-400 bg-clip-text text-transparent">
+                  NovaTech
+                </span>
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+                  Store
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -122,7 +147,7 @@ const Header = () => {
                   >
                     {link.name}
                     {link.badge && (
-                      <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-0.5 rounded-full font-semibold">
+                      <span className="text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-2 py-0.5 rounded-full font-semibold">
                         {link.badge}
                       </span>
                     )}
@@ -145,12 +170,12 @@ const Header = () => {
                             <Link
                               key={cat.path}
                               to={cat.path}
-                              className="flex flex-col items-center gap-3 p-4 rounded-xl hover:bg-secondary border border-transparent hover:border-primary transition-all duration-300 group/item text-center"
+                              className="flex flex-col items-center gap-3 p-4 rounded-xl hover:bg-secondary border border-transparent hover:border-blue-500/50 transition-all duration-300 group/item text-center"
                             >
-                              <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl flex items-center justify-center group-hover/item:from-purple-400 group-hover/item:to-pink-400 transition-all duration-300 text-xl">
+                              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-xl flex items-center justify-center group-hover/item:from-blue-400 group-hover/item:to-cyan-400 transition-all duration-300 text-xl">
                                 {cat.icon}
                               </div>
-                              <span className="text-sm font-semibold text-foreground group-hover/item:text-primary transition-colors line-clamp-2">
+                              <span className="text-sm font-semibold text-foreground group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition-colors line-clamp-2">
                                 {cat.name}
                               </span>
                             </Link>
@@ -238,7 +263,7 @@ const Header = () => {
                   size="icon"
                   className="text-foreground hover:bg-secondary rounded-lg transition-all relative group"
                 >
-                  <ShoppingCart className="h-5 w-5 group-hover:text-primary transition-colors" />
+                  <ShoppingCart className="h-5 w-5 group-hover:text-blue-500 transition-colors" />
                 </Button>
               </Link>
 
@@ -265,11 +290,11 @@ const Header = () => {
                           <Link
                             to={link.path}
                             onClick={() => setIsOpen(false)}
-                            className="flex items-center justify-between text-foreground hover:text-primary font-medium transition-colors text-base py-2 px-3 rounded-lg hover:bg-secondary"
+                            className="flex items-center justify-between text-foreground hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors text-base py-2 px-3 rounded-lg hover:bg-secondary"
                           >
                             <span>{link.name}</span>
                             {link.badge && (
-                              <span className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full font-semibold">
+                              <span className="text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-2 py-1 rounded-full font-semibold">
                                 {link.badge}
                               </span>
                             )}
@@ -281,7 +306,7 @@ const Header = () => {
                                   key={cat.path}
                                   to={cat.path}
                                   onClick={() => setIsOpen(false)}
-                                  className="flex items-center gap-2 py-2 text-sm text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-secondary/50 px-2"
+                                  className="flex items-center gap-2 py-2 text-sm text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary/50 px-2"
                                 >
                                   <span className="text-lg">{cat.icon}</span>
                                   {cat.name}
@@ -298,7 +323,7 @@ const Header = () => {
                       <Link
                         to="/mis-compras"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-secondary"
+                        className="flex items-center gap-3 px-3 py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary"
                       >
                         <Package className="h-5 w-5" />
                         <span>Mis Compras</span>
@@ -307,7 +332,7 @@ const Header = () => {
                         href="https://supabase.com/dashboard/project/pntlkmcbfdibjrgznrdv/editor/17832?schema=public"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 px-3 py-2 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-secondary"
+                        className="flex items-center gap-3 px-3 py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary"
                       >
                         <Database className="h-5 w-5" />
                         <span>Base de Datos</span>
