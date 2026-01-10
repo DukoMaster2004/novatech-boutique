@@ -20,6 +20,22 @@ interface ProductCatalogProps {
   limit?: number;
 }
 
+export interface ProductCardProps {
+  id: string;
+  titulo: string;
+  descripcion: string;
+  precio: number;
+  imagen: string;
+  precioAntiguo?: number;
+  descuento?: number;
+  modelo?: string;
+  color?: string;
+  capacidad?: string;
+  generacion?: string;
+  especificaciones?: unknown;
+  onAddToCart: () => void;
+}
+
 const ProductCatalog = ({
   categoryName,
   featured = false,
@@ -37,7 +53,7 @@ const ProductCatalog = ({
     selectedCategory === 'all' ? undefined : selectedCategory,
     featured
   );
-  
+
   const { data: categories, isLoading: categoriesLoading } = useCategories();
   const { addItem } = useCart();
 
@@ -196,7 +212,6 @@ const ProductCatalog = ({
               color={product.color}
               capacidad={product.capacidad}
               generacion={product.generacion}
-              especificaciones={product.especificaciones}
               onAddToCart={() => handleAddToCart(product)}
             />
           ))}

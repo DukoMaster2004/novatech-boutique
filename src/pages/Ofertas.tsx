@@ -10,7 +10,7 @@ const OfertasPage = () => {
   const { favorites, addFavorite, removeFavorite } = useFavorites();
   const [addedToCart, setAddedToCart] = useState<number | null>(null);
 
-  // Datos de ejemplo - ofertas especiales
+  // Datos de ejemplo - ofertas especiales (30+ productos)
   const ofertas = [
     {
       id: 1,
@@ -48,8 +48,288 @@ const OfertasPage = () => {
       precio: 149,
       precioAnterior: 199,
       descuento: 25,
-      imagen: "https://cdn.cultofmac.com/wp-content/uploads/2024/11/Magic-Keyboards-with-USB-C.jpg",
+      imagen: "https://m.media-amazon.com/images/I/61P5TGc6w4L._AC_UF894,1000_QL80_.jpg",
       rating: 4,
+      stock: true
+    },
+    {
+      id: 5,
+      nombre: "iPhone 15 Pro Max",
+      precio: 1299,
+      precioAnterior: 1599,
+      descuento: 19,
+      imagen: "https://images.unsplash.com/photo-1592286927505-1fed6258583d?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 6,
+      nombre: "MacBook Air M3",
+      precio: 1249,
+      precioAnterior: 1499,
+      descuento: 17,
+      imagen: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 7,
+      nombre: "AirPods Max",
+      precio: 549,
+      precioAnterior: 649,
+      descuento: 15,
+      imagen: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 8,
+      nombre: "iPad Pro 12.9",
+      precio: 1199,
+      precioAnterior: 1399,
+      descuento: 14,
+      imagen: "https://images.unsplash.com/photo-1544244015-0df4abda50e0?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 9,
+      nombre: "Apple TV 4K",
+      precio: 129,
+      precioAnterior: 179,
+      descuento: 28,
+      imagen: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 10,
+      nombre: "HomePod Mini",
+      precio: 79,
+      precioAnterior: 99,
+      descuento: 20,
+      imagen: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 11,
+      nombre: "AirTag",
+      precio: 29,
+      precioAnterior: 39,
+      descuento: 26,
+      imagen: "https://images.unsplash.com/photo-1599009690095-40196cf0bbb4?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 12,
+      nombre: "MagSafe Battery Pack",
+      precio: 99,
+      precioAnterior: 129,
+      descuento: 23,
+      imagen: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 13,
+      nombre: "Apple Watch Ultra",
+      precio: 749,
+      precioAnterior: 899,
+      descuento: 17,
+      imagen: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 14,
+      nombre: "iPhone 15",
+      precio: 999,
+      precioAnterior: 1199,
+      descuento: 17,
+      imagen: "https://images.unsplash.com/photo-1592286927505-1fed6258583d?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 15,
+      nombre: "iPad Mini",
+      precio: 499,
+      precioAnterior: 599,
+      descuento: 17,
+      imagen: "https://images.unsplash.com/photo-1544244015-0df4abda50e0?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 16,
+      nombre: "Mac Mini M3",
+      precio: 699,
+      precioAnterior: 799,
+      descuento: 13,
+      imagen: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 17,
+      nombre: "Mac Studio",
+      precio: 1999,
+      precioAnterior: 2399,
+      descuento: 17,
+      imagen: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 18,
+      nombre: "Studio Display",
+      precio: 1799,
+      precioAnterior: 1999,
+      descuento: 10,
+      imagen: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 19,
+      nombre: "Magic Mouse",
+      precio: 79,
+      precioAnterior: 99,
+      descuento: 20,
+      imagen: "https://m.media-amazon.com/images/I/61P5TGc6w4L._AC_UF894,1000_QL80_.jpg",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 20,
+      nombre: "Magic Trackpad",
+      precio: 99,
+      precioAnterior: 129,
+      descuento: 23,
+      imagen: "https://m.media-amazon.com/images/I/61P5TGc6w4L._AC_UF894,1000_QL80_.jpg",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 21,
+      nombre: "Apple Pencil Pro",
+      precio: 129,
+      precioAnterior: 149,
+      descuento: 13,
+      imagen: "https://images.unsplash.com/photo-1569163139394-de4798aa62b3?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 22,
+      nombre: "Smart Folio iPad",
+      precio: 79,
+      precioAnterior: 99,
+      descuento: 20,
+      imagen: "https://images.unsplash.com/photo-1585864299869-592a0ee4c9e9?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 23,
+      nombre: "Beats Studio Pro",
+      precio: 349,
+      precioAnterior: 449,
+      descuento: 22,
+      imagen: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 24,
+      nombre: "Beats Solo 4",
+      precio: 199,
+      precioAnterior: 249,
+      descuento: 20,
+      imagen: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 25,
+      nombre: "Beats Fit Pro",
+      precio: 199,
+      precioAnterior: 249,
+      descuento: 20,
+      imagen: "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 26,
+      nombre: "USB-C Cable",
+      precio: 19,
+      precioAnterior: 29,
+      descuento: 34,
+      imagen: "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 27,
+      nombre: "20W Power Adapter",
+      precio: 19,
+      precioAnterior: 29,
+      descuento: 34,
+      imagen: "https://images.unsplash.com/photo-1609042369518-5f1e1faa4e91?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 28,
+      nombre: "MagSafe Charger",
+      precio: 39,
+      precioAnterior: 49,
+      descuento: 20,
+      imagen: "https://images.unsplash.com/photo-1609042369518-5f1e1faa4e91?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 29,
+      nombre: "Thunderbolt Cable",
+      precio: 39,
+      precioAnterior: 49,
+      descuento: 20,
+      imagen: "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 30,
+      nombre: "AppleCare+ Bundle",
+      precio: 129,
+      precioAnterior: 179,
+      descuento: 28,
+      imagen: "https://images.unsplash.com/photo-1592286927505-1fed6258583d?w=300&h=300&fit=crop",
+      rating: 4,
+      stock: true
+    },
+    {
+      id: 31,
+      nombre: "iPhone 15 Plus",
+      precio: 1099,
+      precioAnterior: 1299,
+      descuento: 15,
+      imagen: "https://images.unsplash.com/photo-1592286927505-1fed6258583d?w=300&h=300&fit=crop",
+      rating: 5,
+      stock: true
+    },
+    {
+      id: 32,
+      nombre: "MacBook Pro 14",
+      precio: 1999,
+      precioAnterior: 2399,
+      descuento: 17,
+      imagen: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=300&fit=crop",
+      rating: 5,
       stock: true
     }
   ];
@@ -98,7 +378,7 @@ const OfertasPage = () => {
       <section className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-900 dark:to-pink-900 py-16">
         <div className="container mx-auto px-4 text-white">
           <h1 className="text-4xl font-bold mb-2">Ofertas Especiales</h1>
-          <p className="text-purple-100">Los mejores precios en productos Apple seleccionados</p>
+          <p className="text-purple-100">Los mejores precios en productos Apple seleccionados - {ofertas.length} productos disponibles</p>
         </div>
       </section>
 
