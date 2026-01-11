@@ -101,34 +101,22 @@ const Header = () => {
         } border-b border-border`}
       >
         <div className="container mx-auto px-4">
-          <div className="flex h-16 items-center justify-between gap-3 lg:gap-6">
-            {/* Logo Moderno */}
-            <Link to="/" className="flex items-center space-x-3 flex-shrink-0 group">
-              {/* Icono del Logo - Diseño Moderno */}
-              <div className="relative w-11 h-11 rounded-2xl overflow-hidden flex-shrink-0">
-                {/* Fondo con gradiente */}
+          {/* Top Bar - Logo y Acciones */}
+          <div className="flex h-16 items-center justify-between gap-3">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-2 flex-shrink-0 group">
+              <div className="relative w-10 h-10 rounded-2xl overflow-hidden flex-shrink-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-cyan-400 to-teal-500 opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                {/* Patrón geométrico animado */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  {/* Triángulo superior */}
-                  <div className="absolute w-0 h-0 border-l-3 border-r-3 border-b-6 border-l-transparent border-r-transparent border-b-white opacity-80 group-hover:opacity-100 transition-opacity" style={{ top: '3px' }} />
-                  
-                  {/* Círculo central */}
-                  <div className="w-4 h-4 rounded-full bg-white/90 group-hover:bg-white transition-all duration-300" />
-                  
-                  {/* Líneas laterales */}
-                  <div className="absolute left-2 top-1/2 w-2 h-0.5 bg-white/70 transform -translate-y-1/2 group-hover:w-3 transition-all duration-300" />
-                  <div className="absolute right-2 top-1/2 w-2 h-0.5 bg-white/70 transform -translate-y-1/2 group-hover:w-3 transition-all duration-300" />
+                  <div className="absolute w-0 h-0 border-l-3 border-r-3 border-b-6 border-l-transparent border-r-transparent border-b-white opacity-80 group-hover:opacity-100 transition-opacity" style={{ top: '2px' }} />
+                  <div className="w-3 h-3 rounded-full bg-white/90 group-hover:bg-white transition-all duration-300" />
+                  <div className="absolute left-2 top-1/2 w-1.5 h-0.5 bg-white/70 transform -translate-y-1/2 group-hover:w-2 transition-all duration-300" />
+                  <div className="absolute right-2 top-1/2 w-1.5 h-0.5 bg-white/70 transform -translate-y-1/2 group-hover:w-2 transition-all duration-300" />
                 </div>
-
-                {/* Brillo animado en hover */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transition-opacity duration-300 transform -rotate-45" />
               </div>
-
-              {/* Nombre */}
               <div className="hidden sm:flex flex-col gap-0.5">
-                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-500 dark:from-blue-400 dark:via-cyan-300 dark:to-teal-400 bg-clip-text text-transparent">
+                <span className="text-lg font-black tracking-tight bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-500 dark:from-blue-400 dark:via-cyan-300 dark:to-teal-400 bg-clip-text text-transparent">
                   NovaTech
                 </span>
                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
@@ -138,7 +126,7 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1 text-sm font-medium flex-1">
+            <nav className="hidden lg:flex items-center gap-1 text-sm font-medium flex-1 ml-8">
               {navLinks.map((link) => (
                 <div key={link.path} className="relative group">
                   <Link
@@ -156,26 +144,23 @@ const Header = () => {
                     )}
                   </Link>
                   
-                  {/* Categories Dropdown */}
                   {link.hasDropdown && (
-                    <div 
-                      className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50"
-                    >
-                      <div className="bg-background/98 dark:bg-black/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-96 border border-border">
-                        <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mb-6 pb-4 border-b border-border">
+                    <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                      <div className="bg-background/98 dark:bg-black/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 w-80 border border-border">
+                        <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mb-4 pb-3 border-b border-border">
                           🛍️ Explorar por categoría
                         </p>
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-3 gap-3">
                           {categories.map((cat) => (
                             <Link
                               key={cat.path}
                               to={cat.path}
-                              className="flex flex-col items-center gap-3 p-4 rounded-xl hover:bg-secondary border border-transparent hover:border-blue-500/50 transition-all duration-300 group/item text-center"
+                              className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-secondary border border-transparent hover:border-blue-500/50 transition-all duration-300 group/item text-center"
                             >
-                              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-xl flex items-center justify-center group-hover/item:from-blue-400 group-hover/item:to-cyan-400 transition-all duration-300 text-xl">
+                              <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-lg flex items-center justify-center group-hover/item:from-blue-400 group-hover/item:to-cyan-400 transition-all duration-300 text-lg">
                                 {cat.icon}
                               </div>
-                              <span className="text-sm font-semibold text-foreground group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition-colors line-clamp-2">
+                              <span className="text-xs font-semibold text-foreground group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition-colors line-clamp-2">
                                 {cat.name}
                               </span>
                             </Link>
@@ -189,23 +174,21 @@ const Header = () => {
             </nav>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden lg:flex flex-shrink-0 w-72">
+            <div className="hidden lg:flex flex-shrink-0 w-64">
               <SearchBar />
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-1 lg:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-shrink-0">
               {/* Search - Mobile */}
-              <div className="lg:hidden">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-foreground hover:bg-secondary rounded-lg transition-all"
-                  onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-                >
-                  {isMobileSearchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-foreground hover:bg-secondary rounded-lg transition-all lg:hidden"
+                onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+              >
+                {isMobileSearchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+              </Button>
 
               {/* Modo Claro/Oscuro */}
               <div className="hidden md:block">
@@ -249,7 +232,7 @@ const Header = () => {
                 >
                   <Heart className="h-5 w-5 group-hover:fill-red-500 group-hover:text-red-500 transition-all" />
                   {favorites.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-gradient-to-br from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
+                    <span className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
                       {favorites.length}
                     </span>
                   )}
@@ -257,7 +240,7 @@ const Header = () => {
               </Link>
 
               {/* Carrito */}
-              <Link to="/carrito">
+              <Link to="/carrito" title="Carrito">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -280,68 +263,84 @@ const Header = () => {
                 </SheetTrigger>
                 <SheetContent
                   side="right"
-                  className="w-72 bg-background/98 dark:bg-black/95 backdrop-blur-xl border-l border-border"
+                  className="w-80 bg-background/98 dark:bg-black/95 backdrop-blur-xl border-l border-border p-0"
                 >
-                  <div className="flex flex-col gap-6 mt-8">
-                    {/* Mobile Navigation */}
-                    <nav className="flex flex-col gap-2">
-                      {navLinks.map((link) => (
-                        <div key={link.path}>
-                          <Link
-                            to={link.path}
-                            onClick={() => setIsOpen(false)}
-                            className="flex items-center justify-between text-foreground hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors text-base py-2 px-3 rounded-lg hover:bg-secondary"
-                          >
-                            <span>{link.name}</span>
-                            {link.badge && (
-                              <span className="text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-2 py-1 rounded-full font-semibold">
-                                {link.badge}
-                              </span>
-                            )}
-                          </Link>
-                          {link.hasDropdown && (
-                            <div className="ml-2 mt-2 space-y-1 border-l-2 border-secondary pl-4">
-                              {categories.map((cat) => (
-                                <Link
-                                  key={cat.path}
-                                  to={cat.path}
-                                  onClick={() => setIsOpen(false)}
-                                  className="flex items-center gap-2 py-2 text-sm text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary/50 px-2"
-                                >
-                                  <span className="text-lg">{cat.icon}</span>
-                                  {cat.name}
-                                </Link>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </nav>
-
-                    {/* Mobile Only Links */}
-                    <div className="border-t border-border pt-4 space-y-2">
-                      <Link
-                        to="/mis-compras"
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary"
-                      >
-                        <Package className="h-5 w-5" />
-                        <span>Mis Compras</span>
-                      </Link>
-                      <a
-                        href="https://supabase.com/dashboard/project/pntlkmcbfdibjrgznrdv/editor/17832?schema=public"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 px-3 py-2 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary"
-                      >
-                        <Database className="h-5 w-5" />
-                        <span>Base de Datos</span>
-                      </a>
+                  <div className="flex flex-col h-full">
+                    {/* Header del Sheet */}
+                    <div className="flex items-center justify-between p-4 border-b border-border">
+                      <span className="font-bold text-lg text-foreground">Menú</span>
+                      <button onClick={() => setIsOpen(false)} className="text-muted-foreground hover:text-foreground">
+                        <X className="h-5 w-5" />
+                      </button>
                     </div>
 
-                    {/* Theme Toggle Mobile */}
-                    <div className="border-t border-border pt-4">
-                      <div className="flex items-center justify-between px-3">
+                    {/* Contenido del Menu */}
+                    <div className="flex-1 overflow-y-auto">
+                      <div className="flex flex-col p-4 gap-4">
+                        {/* Mobile Navigation */}
+                        <nav className="flex flex-col gap-1">
+                          {navLinks.map((link) => (
+                            <div key={link.path}>
+                              <Link
+                                to={link.path}
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center justify-between text-foreground hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors text-base py-3 px-4 rounded-lg hover:bg-secondary/70 border-l-4 border-transparent hover:border-blue-500"
+                              >
+                                <span>{link.name}</span>
+                                {link.badge && (
+                                  <span className="text-xs bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-2 py-1 rounded-full font-semibold">
+                                    {link.badge}
+                                  </span>
+                                )}
+                              </Link>
+                              {link.hasDropdown && (
+                                <div className="ml-4 mt-2 space-y-1 border-l-2 border-secondary pl-4">
+                                  {categories.map((cat) => (
+                                    <Link
+                                      key={cat.path}
+                                      to={cat.path}
+                                      onClick={() => setIsOpen(false)}
+                                      className="flex items-center gap-3 py-2.5 text-sm text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary/50 px-3"
+                                    >
+                                      <span className="text-lg">{cat.icon}</span>
+                                      <span className="font-medium">{cat.name}</span>
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </nav>
+
+                        {/* Divider */}
+                        <div className="h-px bg-border" />
+
+                        {/* Mobile Only Links */}
+                        <div className="space-y-2">
+                          <Link
+                            to="/mis-compras"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary/70 border-l-4 border-transparent hover:border-blue-500 font-medium"
+                          >
+                            <Package className="h-5 w-5" />
+                            <span>Mis Compras</span>
+                          </Link>
+                          <a
+                            href="https://supabase.com/dashboard/project/pntlkmcbfdibjrgznrdv/editor/17832?schema=public"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 px-4 py-3 text-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-lg hover:bg-secondary/70 border-l-4 border-transparent hover:border-blue-500 font-medium"
+                          >
+                            <Database className="h-5 w-5" />
+                            <span>Base de Datos</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer del Sheet */}
+                    <div className="border-t border-border p-4 mt-auto">
+                      <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-foreground">Tema</span>
                         <ModeToggle />
                       </div>
@@ -352,9 +351,9 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Mobile Search Bar - FUNCIONAL CON BD */}
+          {/* Mobile Search Bar */}
           {isMobileSearchOpen && (
-            <div className="lg:hidden pb-4 animate-in fade-in slide-in-from-top-2">
+            <div className="lg:hidden pb-4 pt-2 animate-in fade-in slide-in-from-top-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 <Input
@@ -362,7 +361,7 @@ const Header = () => {
                   placeholder="Buscar productos..."
                   value={mobileSearchQuery}
                   onChange={(e) => setMobileSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 w-full"
+                  className="pl-10 pr-4 w-full text-sm"
                   autoFocus
                 />
               </div>
