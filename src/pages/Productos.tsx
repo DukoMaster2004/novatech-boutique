@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import { Heart, ShoppingCart, Star, Filter, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
@@ -8,6 +8,8 @@ import { toast } from "sonner";
 
 const ProductosPage = () => {
   const { categoria } = useParams();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
   const { addItem } = useCart();
   const { favorites, addFavorite, removeFavorite } = useFavorites();
   const [addedToCart, setAddedToCart] = useState<number | null>(null);
@@ -91,7 +93,6 @@ const ProductosPage = () => {
       accesorios: { min: 19, max: 499, step: 50 }
     };
 
-    const imagen = "https://images.unsplash.com/photo-1592286927505-1fed6258583d?w=300&h=300&fit=crop";
     const imagenesMap = {
       iphone: "https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.large.jpg",
       mac: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=300&fit=crop",
@@ -126,13 +127,36 @@ const ProductosPage = () => {
 
   const productos = generarProductos();
 
+  // Filtrar por categoría, búsqueda y otros filtros
   const filteredProducts = productos.filter(p => {
     if (categoria && p.categoria !== categoria) return false;
     if (p.precio < filters.priceRange[0] || p.precio > filters.priceRange[1]) return false;
     if (p.rating < filters.rating) return false;
     if (filters.inStock && !p.stock) return false;
+    
+    // Búsqueda por nombre
+    if (searchQuery && !p.nombre.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    
     return true;
   });
+
+  // Scroll al primer producto coincidente cuando se carga la búsqueda
+  useEffect(() => {
+    if (searchQuery) {
+      setTimeout(() => {
+        const firstProduct = document.querySelector('[data-product-name]');
+        if (firstProduct) {
+          firstProduct.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstProduct.classList.add('ring-2', 'ring-primary', 'animate-pulse');
+          setTimeout(() => {
+            firstProduct.classList.remove('ring-2', 'ring-primary', 'animate-pulse');
+          }, 3000);
+        }
+      }, 300);
+    }
+  }, [searchQuery]);
 
   const handleAddToCart = (producto: typeof productos[0]) => {
     addItem({
@@ -174,7 +198,7 @@ const ProductosPage = () => {
       <section className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-900 dark:to-pink-900 py-12">
         <div className="container mx-auto px-4 text-white">
           <h1 className="text-4xl font-bold mb-2">
-            {categoria ? categoria.charAt(0).toUpperCase() + categoria.slice(1) : "Todos los Productos"}
+            {searchQuery ? `Resultados de búsqueda: "${searchQuery}"` : categoria ? categoria.charAt(0).toUpperCase() + categoria.slice(1) : "Todos los Productos"}
           </h1>
           <p className="text-purple-100">Descubre nuestras mejores ofertas - {filteredProducts.length} productos disponibles</p>
         </div>
@@ -254,6 +278,7 @@ const ProductosPage = () => {
                 {filteredProducts.map(producto => (
                   <div
                     key={producto.id}
+                    data-product-name={producto.nombre}
                     className="group bg-background border border-border rounded-2xl overflow-hidden hover:border-primary hover:shadow-xl transition-all duration-300 flex flex-col"
                   >
                     {/* Imagen */}
