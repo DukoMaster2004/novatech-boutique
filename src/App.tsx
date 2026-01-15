@@ -10,10 +10,10 @@ import Carrito from "@/pages/Carrito";
 import Productos from "@/pages/Productos";
 import Favoritos from "@/pages/Favoritos";
 import MisCompras from "@/pages/MisCompras";
+import AddProduct from "@/pages/AddProduct"; // AGREGAR ESTA LÍNEA
 
 function App() {
   const [isDark, setIsDark] = useState(false);
-
   useEffect(() => {
     // Detectar preferencia del sistema
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -29,7 +29,6 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
   }, []);
-
   return (
     <Router>
       <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -51,15 +50,14 @@ function App() {
             <Route path="/carrito" element={<Carrito />} />
             <Route path="/favoritos" element={<Favoritos />} />
             <Route path="/mis-compras" element={<MisCompras />} />
+            <Route path="/agregar-producto" element={<AddProduct />} />
             <Route path="/rastrear" element={<div className="p-8 text-foreground">Rastrear Pedido</div>} />
             <Route path="/cuenta" element={<div className="p-8 text-foreground">Mi Cuenta</div>} />
           </Routes>
         </main>
-
         <Footer />
       </div>
     </Router>
   );
 }
-
 export default App;

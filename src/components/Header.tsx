@@ -1,4 +1,4 @@
-import { ShoppingCart, Menu, Heart, Package, Database, ChevronDown, Search, X } from "lucide-react";
+import { ShoppingCart, Menu, Heart, Package, Database, ChevronDown, Search, X, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -180,6 +180,16 @@ const Header = () => {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2 flex-shrink-0">
+              {/* Botón Agregar Producto - Desktop */}
+              <Link to="/agregar-producto" className="hidden md:inline-flex">
+                <Button
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-lg transition-all gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden lg:inline">Agregar</span>
+                </Button>
+              </Link>
+
               {/* Search - Mobile */}
               <Button
                 variant="ghost"
@@ -277,6 +287,21 @@ const Header = () => {
                     {/* Contenido del Menu */}
                     <div className="flex-1 overflow-y-auto">
                       <div className="flex flex-col p-4 gap-4">
+                        {/* Botón Agregar Producto - Mobile */}
+                        <Link
+                          to="/agregar-producto"
+                          onClick={() => setIsOpen(false)}
+                          className="w-full"
+                        >
+                          <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-lg transition-all gap-2">
+                            <Plus className="h-4 w-4" />
+                            Agregar Producto
+                          </Button>
+                        </Link>
+
+                        {/* Divider */}
+                        <div className="h-px bg-border" />
+
                         {/* Mobile Navigation */}
                         <nav className="flex flex-col gap-1">
                           {navLinks.map((link) => (
